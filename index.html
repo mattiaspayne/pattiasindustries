@@ -319,19 +319,18 @@
       <section id="pronunciations" aria-labelledby="pronunciation-heading">
         <div class="accent-tag">Canadian pronunciations</div>
         <h2 id="pronunciation-heading">How to say “Nalgene”</h2>
-        <p class="muted">Upload your preferred pronunciation and keep it on hand. Pink is our accent; clarity is the mission.</p>
+        <p class="muted">Choose from the curated pronunciations below. Pink is our accent; clarity is the mission.</p>
 
         <div class="pronounce-card">
           <div class="upload-area">
-            <label for="audioInput">Upload your audio file</label>
-            <input id="audioInput" type="file" accept="audio/*,.m4a" />
-            <div class="status" id="fileStatus">No file uploaded yet.</div>
+            <label for="audioSelect">Available pronunciations</label>
+            <select id="audioSelect"></select>
+            <div class="status" id="fileStatus">Ready: built-in default.</div>
           </div>
 
           <div class="controls">
-            <button class="btn btn-primary" id="playBtn" disabled>Play Nalgene</button>
-            <button class="btn btn-ghost" id="clearBtn" disabled>Remove file</button>
-            <button class="btn btn-ghost" id="useDefaultBtn">Use built-in clip</button>
+            <button class="btn btn-primary" id="playBtn" disabled>Play selection</button>
+            <button class="btn btn-ghost" id="useDefaultBtn">Reset to default</button>
           </div>
 
           <audio id="player" controls preload="metadata" aria-label="Nalgene pronunciation audio">
@@ -415,14 +414,17 @@
       updateCountdown();
       setInterval(updateCountdown, 1000);
 
-      // Pronunciation upload + playback
-      const audioInput = document.getElementById("audioInput");
+      // Pronunciation library playback
+      const audioSelect = document.getElementById("audioSelect");
       const player = document.getElementById("player");
       const playBtn = document.getElementById("playBtn");
-      const clearBtn = document.getElementById("clearBtn");
       const useDefaultBtn = document.getElementById("useDefaultBtn");
       const fileStatus = document.getElementById("fileStatus");
-      const embeddedAudioPath = "assets/audio/nalgene-default.m4a";
+      const embeddedAudioPath = "assets/audio/nalgene-default.wav";
+      const pronunciationLibrary = [
+        { label: "Nalgene (default)", path: embeddedAudioPath },
+        // Add more entries as you add files into assets/audio
+      ];
 
       let currentAudioUrl = null;
       let currentUrlIsBlob = false;
@@ -441,43 +443,39 @@
         currentUrlIsBlob = isBlob;
         player.src = url;
         playBtn.disabled = false;
-        clearBtn.disabled = false;
         fileStatus.textContent = isDefault ? `${label} (built-in)` : `Ready: ${label}`;
         player.load();
       }
 
-      function setAudioSourceFromFile(file) {
-        clearCurrentUrl();
-        if (!file) {
-          player.removeAttribute("src");
-          playBtn.disabled = true;
-          clearBtn.disabled = true;
-          fileStatus.textContent = "No file uploaded yet.";
-          return;
-        }
-        setAudioSourceFromUrl(URL.createObjectURL(file), file.name, { isBlob: true });
+      function buildLibraryOptions() {
+        audioSelect.innerHTML = "";
+        pronunciationLibrary.forEach((item, index) => {
+          const option = document.createElement("option");
+          option.value = item.path;
+          option.textContent = item.label;
+          if (index === 0) option.selected = true;
+          audioSelect.appendChild(option);
+        });
       }
-
-      audioInput.addEventListener("change", (event) => {
-        const file = event.target.files?.[0];
-        if (file) {
-          setAudioSourceFromFile(file);
-        }
-      });
 
       playBtn.addEventListener("click", () => {
         player.play();
       });
 
-      clearBtn.addEventListener("click", () => {
-        audioInput.value = "";
-        setAudioSourceFromFile(null);
+      audioSelect.addEventListener("change", (event) => {
+        const selectedPath = event.target.value;
+        const selectedLabel = pronunciationLibrary.find((item) => item.path === selectedPath)?.label || "Selection";
+        if (selectedPath) {
+          setAudioSourceFromUrl(selectedPath, selectedLabel, { isDefault: selectedPath === embeddedAudioPath });
+        }
       });
 
       useDefaultBtn.addEventListener("click", () => {
         setAudioSourceFromUrl(embeddedAudioPath, "Pattias pronunciation", { isDefault: true });
+        audioSelect.value = embeddedAudioPath;
       });
 
+      buildLibraryOptions();
       // Initialize with embedded clip
       setAudioSourceFromUrl(embeddedAudioPath, "Pattias pronunciation", { isDefault: true });
     </script>
