@@ -324,13 +324,14 @@
         <div class="pronounce-card">
           <div class="upload-area">
             <label for="audioInput">Upload your audio file</label>
-            <input id="audioInput" type="file" accept="audio/*" />
+            <input id="audioInput" type="file" accept="audio/*,.m4a" />
             <div class="status" id="fileStatus">No file uploaded yet.</div>
           </div>
 
           <div class="controls">
             <button class="btn btn-primary" id="playBtn" disabled>Play Nalgene</button>
             <button class="btn btn-ghost" id="clearBtn" disabled>Remove file</button>
+            <button class="btn btn-ghost" id="useDefaultBtn">Use built-in clip</button>
           </div>
 
           <audio id="player" controls preload="metadata" aria-label="Nalgene pronunciation audio">
@@ -419,14 +420,34 @@
       const player = document.getElementById("player");
       const playBtn = document.getElementById("playBtn");
       const clearBtn = document.getElementById("clearBtn");
+      const useDefaultBtn = document.getElementById("useDefaultBtn");
       const fileStatus = document.getElementById("fileStatus");
-      let currentAudioUrl = null;
+      const embeddedAudioPath = "assets/audio/nalgene-default.wav";
 
-      function setAudioSource(file) {
-        if (currentAudioUrl) {
+      let currentAudioUrl = null;
+      let currentUrlIsBlob = false;
+
+      function clearCurrentUrl() {
+        if (currentUrlIsBlob && currentAudioUrl) {
           URL.revokeObjectURL(currentAudioUrl);
-          currentAudioUrl = null;
         }
+        currentAudioUrl = null;
+        currentUrlIsBlob = false;
+      }
+
+      function setAudioSourceFromUrl(url, label, { isBlob = false, isDefault = false } = {}) {
+        clearCurrentUrl();
+        currentAudioUrl = url;
+        currentUrlIsBlob = isBlob;
+        player.src = url;
+        playBtn.disabled = false;
+        clearBtn.disabled = false;
+        fileStatus.textContent = isDefault ? `${label} (built-in)` : `Ready: ${label}`;
+        player.load();
+      }
+
+      function setAudioSourceFromFile(file) {
+        clearCurrentUrl();
         if (!file) {
           player.removeAttribute("src");
           playBtn.disabled = true;
@@ -434,19 +455,13 @@
           fileStatus.textContent = "No file uploaded yet.";
           return;
         }
-
-        currentAudioUrl = URL.createObjectURL(file);
-        player.src = currentAudioUrl;
-        playBtn.disabled = false;
-        clearBtn.disabled = false;
-        fileStatus.textContent = `Ready: ${file.name}`;
+        setAudioSourceFromUrl(URL.createObjectURL(file), file.name, { isBlob: true });
       }
 
       audioInput.addEventListener("change", (event) => {
         const file = event.target.files?.[0];
         if (file) {
-          setAudioSource(file);
-          player.load();
+          setAudioSourceFromFile(file);
         }
       });
 
@@ -456,8 +471,15 @@
 
       clearBtn.addEventListener("click", () => {
         audioInput.value = "";
-        setAudioSource(null);
+        setAudioSourceFromFile(null);
       });
+
+      useDefaultBtn.addEventListener("click", () => {
+        setAudioSourceFromUrl(embeddedAudioPath, "Pattias pronunciation", { isDefault: true });
+      });
+
+      // Initialize with embedded clip
+      setAudioSourceFromUrl(embeddedAudioPath, "Pattias pronunciation", { isDefault: true });
     </script>
   </body>
 </html>
