@@ -1,11 +1,463 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Test Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pattias Industries</title>
+    <link
+      rel="preconnect"
+      href="https://fonts.googleapis.com"
+    />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Work+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0d0c11;
+        --panel: rgba(255, 255, 255, 0.04);
+        --panel-strong: rgba(255, 255, 255, 0.08);
+        --accent: #ff5f91;
+        --accent-2: #f2c9d6;
+        --text: #f9f5ff;
+        --muted: #c9c6d3;
+        --shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+        --radius: 20px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Work Sans", system-ui, -apple-system, sans-serif;
+        color: var(--text);
+        background: radial-gradient(circle at 15% 20%, rgba(255, 95, 145, 0.18), transparent 30%),
+          radial-gradient(circle at 80% 0%, rgba(242, 201, 214, 0.18), transparent 25%),
+          radial-gradient(circle at 90% 80%, rgba(255, 95, 145, 0.1), transparent 35%),
+          var(--bg);
+        line-height: 1.6;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        backdrop-filter: blur(10px);
+        background: rgba(13, 12, 17, 0.8);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .nav {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 16px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        font-family: "Playfair Display", "Work Sans", serif;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--accent), #ff85af);
+        display: grid;
+        place-items: center;
+        color: #0d0c11;
+        font-weight: 700;
+        box-shadow: var(--shadow);
+      }
+
+      .menu {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .menu button {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: var(--panel);
+        color: var(--text);
+        padding: 10px 14px;
+        border-radius: 12px;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+      }
+
+      .menu button:hover,
+      .menu button:focus-visible {
+        border-color: rgba(255, 95, 145, 0.4);
+        transform: translateY(-1px);
+      }
+
+      .menu button.active {
+        background: linear-gradient(120deg, rgba(255, 95, 145, 0.18), rgba(242, 201, 214, 0.15));
+        border-color: rgba(255, 95, 145, 0.5);
+        color: #fff;
+      }
+
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 24px 80px;
+        display: grid;
+        gap: 40px;
+      }
+
+      section {
+        background: var(--panel);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: var(--radius);
+        padding: 28px;
+        box-shadow: var(--shadow);
+      }
+
+      h1,
+      h2 {
+        margin: 0 0 8px;
+        font-family: "Playfair Display", "Work Sans", serif;
+        letter-spacing: 0.02em;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .countdown-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 16px;
+        margin-top: 28px;
+      }
+
+      .time-card {
+        background: var(--panel-strong);
+        border-radius: 16px;
+        padding: 18px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      }
+
+      .time-card .number {
+        font-size: clamp(36px, 6vw, 56px);
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      .time-card .label {
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        font-size: 12px;
+        color: var(--accent-2);
+      }
+
+      .accent-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 95, 145, 0.14);
+        color: #fff;
+        border: 1px solid rgba(255, 95, 145, 0.3);
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+      }
+
+      .pronounce-card {
+        display: grid;
+        gap: 18px;
+        grid-template-columns: 1fr;
+      }
+
+      .upload-area {
+        border: 1px dashed rgba(255, 255, 255, 0.25);
+        border-radius: 14px;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.02);
+        display: grid;
+        gap: 10px;
+      }
+
+      .upload-area label {
+        font-weight: 600;
+      }
+
+      .upload-area input[type="file"] {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 10px;
+        border-radius: 10px;
+        color: var(--text);
+        width: 100%;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .btn {
+        border: none;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: var(--shadow);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--accent), #ff85af);
+        color: #0d0c11;
+      }
+
+      .btn-ghost {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--text);
+      }
+
+      .btn:hover,
+      .btn:focus-visible {
+        transform: translateY(-1px);
+      }
+
+      .status {
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      audio {
+        width: 100%;
+        margin-top: 6px;
+      }
+
+      @media (max-width: 720px) {
+        .nav {
+          padding: 14px 16px;
+        }
+
+        .brand {
+          font-size: 16px;
+        }
+
+        section {
+          padding: 20px;
+        }
+      }
+    </style>
   </head>
-  <body style="background:#111;color:#0f0;font-family:monospace;text-align:center;margin-top:20vh;">
-    <h1>It works 🎉</h1>
-    <p>If you can see this, GitHub Pages is configured correctly.</p>
+  <body>
+    <header>
+      <div class="nav">
+        <div class="brand">
+          <div class="brand-mark">P</div>
+          <div>Pattias Industries</div>
+        </div>
+        <div class="menu" role="tablist" aria-label="Primary navigation">
+          <button class="active" data-target="countdown" role="tab" aria-selected="true">Countdown until launch date</button>
+          <button data-target="pronunciations" role="tab" aria-selected="false">Canadian pronunciations</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="countdown" aria-labelledby="countdown-heading">
+        <div class="accent-tag">Launch sequence</div>
+        <h1 id="countdown-heading">Countdown to December 5, 7:55 PM ET</h1>
+        <p class="muted">We are polishing every detail. Expect a refined experience at launch.</p>
+        <div class="countdown-grid" role="timer" aria-live="polite">
+          <div class="time-card">
+            <div class="number" id="days">--</div>
+            <div class="label">Days</div>
+          </div>
+          <div class="time-card">
+            <div class="number" id="hours">--</div>
+            <div class="label">Hours</div>
+          </div>
+          <div class="time-card">
+            <div class="number" id="minutes">--</div>
+            <div class="label">Minutes</div>
+          </div>
+          <div class="time-card">
+            <div class="number" id="seconds">--</div>
+            <div class="label">Seconds</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="pronunciations" aria-labelledby="pronunciation-heading">
+        <div class="accent-tag">Canadian pronunciations</div>
+        <h2 id="pronunciation-heading">How to say “Nalgene”</h2>
+        <p class="muted">Upload your preferred pronunciation and keep it on hand. Pink is our accent; clarity is the mission.</p>
+
+        <div class="pronounce-card">
+          <div class="upload-area">
+            <label for="audioInput">Upload your audio file</label>
+            <input id="audioInput" type="file" accept="audio/*" />
+            <div class="status" id="fileStatus">No file uploaded yet.</div>
+          </div>
+
+          <div class="controls">
+            <button class="btn btn-primary" id="playBtn" disabled>Play Nalgene</button>
+            <button class="btn btn-ghost" id="clearBtn" disabled>Remove file</button>
+          </div>
+
+          <audio id="player" controls preload="metadata" aria-label="Nalgene pronunciation audio">
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const navButtons = document.querySelectorAll(".menu button");
+      const sections = document.querySelectorAll("main section");
+
+      navButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const targetId = btn.dataset.target;
+          navButtons.forEach((b) => {
+            b.classList.toggle("active", b === btn);
+            b.setAttribute("aria-selected", b === btn ? "true" : "false");
+          });
+          sections.forEach((section) => {
+            const isTarget = section.id === targetId;
+            section.style.display = isTarget ? "block" : "none";
+          });
+          document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+
+      // Initialize view with countdown only visible
+      sections.forEach((section) => {
+        section.style.display = section.id === "countdown" ? "block" : "none";
+      });
+
+      const countdownElements = {
+        days: document.getElementById("days"),
+        hours: document.getElementById("hours"),
+        minutes: document.getElementById("minutes"),
+        seconds: document.getElementById("seconds"),
+      };
+
+      // Compute next December 5, 7:55 PM ET (EST in December, UTC-5)
+      function getNextLaunchDate() {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        let target = new Date(`${currentYear}-12-05T19:55:00-05:00`);
+        if (now > target) {
+          target = new Date(`${currentYear + 1}-12-05T19:55:00-05:00`);
+        }
+        return target;
+      }
+
+      function formatNumber(value) {
+        return value.toString().padStart(2, "0");
+      }
+
+      function updateCountdown() {
+        const target = getNextLaunchDate();
+        const now = new Date();
+        const diff = target - now;
+
+        if (diff <= 0) {
+          countdownElements.days.textContent = "00";
+          countdownElements.hours.textContent = "00";
+          countdownElements.minutes.textContent = "00";
+          countdownElements.seconds.textContent = "00";
+          return;
+        }
+
+        const seconds = Math.floor(diff / 1000);
+        const days = Math.floor(seconds / (60 * 60 * 24));
+        const hours = Math.floor((seconds % (60 * 60 * 24)) / (60 * 60));
+        const minutes = Math.floor((seconds % (60 * 60)) / 60);
+        const secs = seconds % 60;
+
+        countdownElements.days.textContent = formatNumber(days);
+        countdownElements.hours.textContent = formatNumber(hours);
+        countdownElements.minutes.textContent = formatNumber(minutes);
+        countdownElements.seconds.textContent = formatNumber(secs);
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+
+      // Pronunciation upload + playback
+      const audioInput = document.getElementById("audioInput");
+      const player = document.getElementById("player");
+      const playBtn = document.getElementById("playBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const fileStatus = document.getElementById("fileStatus");
+      let currentAudioUrl = null;
+
+      function setAudioSource(file) {
+        if (currentAudioUrl) {
+          URL.revokeObjectURL(currentAudioUrl);
+          currentAudioUrl = null;
+        }
+        if (!file) {
+          player.removeAttribute("src");
+          playBtn.disabled = true;
+          clearBtn.disabled = true;
+          fileStatus.textContent = "No file uploaded yet.";
+          return;
+        }
+
+        currentAudioUrl = URL.createObjectURL(file);
+        player.src = currentAudioUrl;
+        playBtn.disabled = false;
+        clearBtn.disabled = false;
+        fileStatus.textContent = `Ready: ${file.name}`;
+      }
+
+      audioInput.addEventListener("change", (event) => {
+        const file = event.target.files?.[0];
+        if (file) {
+          setAudioSource(file);
+          player.load();
+        }
+      });
+
+      playBtn.addEventListener("click", () => {
+        player.play();
+      });
+
+      clearBtn.addEventListener("click", () => {
+        audioInput.value = "";
+        setAudioSource(null);
+      });
+    </script>
   </body>
 </html>
